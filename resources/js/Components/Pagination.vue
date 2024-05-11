@@ -9,12 +9,15 @@ defineProps({
         type: Function,
         required: true,
     },
+    tableName: {
+        type: String,
+    },
 });
 
 const updatePageNumber = (link) => {
     let pageNumber = link.url.split("=")[1];
 
-    router.visit(`/students?&page=${pageNumber}`, {
+    router.visit(`/${tableName}?&page=${pageNumber}`, {
         preserveScroll: true,
     });
 };
