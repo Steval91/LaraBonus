@@ -27,8 +27,9 @@ class BonusController extends Controller
             ),
             'search' => request('search') ?? '',
             'can' => [
-                'updateBonus' => Auth::user()->is_admin == 1,
-                'deleteBonus' => Auth::user()->is_admin == 1
+                'create' => Auth::user()->is_admin == 1,
+                'update' => Auth::user()->is_admin == 1,
+                'delete' => Auth::user()->is_admin == 1
             ]
         ]);
     }
@@ -68,9 +69,11 @@ class BonusController extends Controller
     public function show(string $id)
     {
         $bonus = Bonus::find($id);
+        $bonus_detail = BonusDetail::where('bonus_id', $id)->get();
 
-        return inertia('bonus/BonusShow', [
+        return inertia('Bonus/BonusShow', [
             'bonus' => BonusResource::make($bonus),
+            'bonus_detail' => BonusDetailResource::collection($bonus_detail),
         ]);
     }
 

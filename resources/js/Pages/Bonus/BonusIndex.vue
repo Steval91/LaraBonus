@@ -15,6 +15,8 @@ defineProps({
     },
 });
 
+const tableName = "bonus";
+
 let pageNumber = ref(1),
     searchTerm = ref(usePage().props.search ?? "");
 
@@ -61,29 +63,26 @@ const deleteEmployee = (id) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Bonus
-            </h2>
+            <div class="sm:flex sm:items-center">
+                <div class="sm:flex-auto">
+                    <h1
+                        class="text-xl font-semibold text-gray-900 leading-tight"
+                    >
+                        Bonus
+                    </h1>
+                </div>
+                <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                    <Link
+                        :href="route('bonus.create')"
+                        class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                        >Tambah Bonus</Link
+                    >
+                </div>
+            </div>
         </template>
-        <div class="bg-gray-100 py-10">
+        <div class="bg-gray-100 py-3">
             <div class="mx-auto max-w-7xl">
                 <div class="px-4 sm:px-6 lg:px-8">
-                    <div class="sm:flex sm:items-center">
-                        <div class="sm:flex-auto">
-                            <h1 class="text-xl font-semibold text-gray-900">
-                                Bonus
-                            </h1>
-                        </div>
-
-                        <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                            <Link
-                                :href="route('bonus.create')"
-                                class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                                >Tambah Bonus</Link
-                            >
-                        </div>
-                    </div>
-
                     <div class="flex flex-col justify-between sm:flex-row mt-6">
                         <div class="relative text-sm text-gray-800 col-span-3">
                             <div
@@ -131,9 +130,9 @@ const deleteEmployee = (id) => {
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                                    class="px-3.5 py-3 text-left text-sm font-semibold text-gray-900"
                                                 >
-                                                    Created At
+                                                    Tanggal Dibuat
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -156,7 +155,7 @@ const deleteEmployee = (id) => {
                                                 <td
                                                     class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
                                                 >
-                                                    {{ bonus.total_bonus }}
+                                                    Rp {{ bonus.total_bonus }}
                                                 </td>
                                                 <td
                                                     class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
@@ -169,30 +168,31 @@ const deleteEmployee = (id) => {
                                                 <td
                                                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                                                 >
-                                                    <!-- <Link
+                                                    <Link
                                                         :href="
                                                             route(
                                                                 'bonus.show',
                                                                 bonus.id
                                                             )
                                                         "
-                                                        class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                                                        class="inline-flex items-center px-2 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
                                                         >Lihat Detail</Link
-                                                    > -->
+                                                    >
                                                     <Link
-                                                        v-if="can.updateBonus"
+                                                        v-if="can.update"
                                                         :href="
                                                             route(
                                                                 'bonus.edit',
                                                                 bonus.id
                                                             )
                                                         "
-                                                        class="inline-flex items-center px-4 py-2 bg-blue-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-800 active:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-950 focus:ring-offset-2 transition ease-in-out duration-150 mx-1"
+                                                        class="inline-flex items-center mx-1 px-2 py-1 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
                                                     >
                                                         Edit
                                                     </Link>
-                                                    <DangerButton
-                                                        v-if="can.deleteBonus"
+                                                    <button
+                                                        v-if="can.delete"
+                                                        class="inline-flex items-center px-2 py-1 bg-red-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:bg-red-700 active:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
                                                         @click="
                                                             deleteEmployee(
                                                                 bonus.id
@@ -200,7 +200,7 @@ const deleteEmployee = (id) => {
                                                         "
                                                     >
                                                         Hapus
-                                                    </DangerButton>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -209,6 +209,7 @@ const deleteEmployee = (id) => {
                                 <Pagination
                                     :data="bonuses"
                                     :pageNumberUpdated="pageNumberUpdated"
+                                    :tableName="tableName"
                                 />
                             </div>
                         </div>

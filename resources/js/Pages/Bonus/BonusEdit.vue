@@ -75,7 +75,7 @@ const submit = async () => {
                 <form @submit.prevent="submit" class="space-y-4">
                     <div>
                         <InputLabel for="totalBonus"
-                            >Total Pembayaran Bonus (Rp)</InputLabel
+                            >Total Bonus (Rp)</InputLabel
                         >
                         <TextInput
                             class="mt-1"
@@ -85,10 +85,90 @@ const submit = async () => {
                         />
                         <InputError :message="form.errors.total_bonus" />
                     </div>
-
                     <h3 class="text-lg">Detail Bonus</h3>
-
-                    <div
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th
+                                    scope="col"
+                                    class="py-3 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                                >
+                                    Pegawai
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="py-3 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                                >
+                                    Persentase Bonus
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-3 py-3 text-left text-sm font-semibold text-gray-900"
+                                >
+                                    Nilai Bonus
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                                />
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                            <tr
+                                v-for="(line, index) in form.bonus_detail"
+                                :key="index"
+                            >
+                                <td
+                                    class="whitespace-nowrap py-2 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                                >
+                                    <select
+                                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mr-1"
+                                        v-model="line.employee_id"
+                                    >
+                                        <option
+                                            v-for="employee in employees.data"
+                                            :key="employee.id"
+                                            :value="employee.id"
+                                        >
+                                            {{ employee.name }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="line.errors" />
+                                </td>
+                                <td
+                                    class="whitespace-nowrap py-2 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                                >
+                                    <TextInput
+                                        v-model="line.percentage"
+                                        type="number"
+                                    />
+                                    <InputError :message="line.errors" />
+                                </td>
+                                <td
+                                    class="whitespace-nowrap py-2 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                                >
+                                    Rp
+                                    {{
+                                        (
+                                            (form.total_bonus *
+                                                line.percentage) /
+                                            100
+                                        ).toFixed(2)
+                                    }}
+                                </td>
+                                <td
+                                    class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+                                >
+                                    <DangerButton
+                                        class="ml-2"
+                                        @click="removeBonusLine(index)"
+                                        >Hapus</DangerButton
+                                    >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- <div
                         v-for="(line, index) in form.bonus_detail"
                         :key="index"
                     >
@@ -127,13 +207,8 @@ const submit = async () => {
                                 }}
                             </div>
 
-                            <DangerButton
-                                class="ml-2"
-                                @click="removeBonusLine(index)"
-                                >Hapus</DangerButton
-                            >
                         </div>
-                    </div>
+                    </div> -->
                     <InfoButton @click="addBonusLine">Tambah Baris</InfoButton>
 
                     <hr />
