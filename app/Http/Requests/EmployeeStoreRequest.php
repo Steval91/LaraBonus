@@ -11,7 +11,7 @@ class EmployeeStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check();
     }
 
     /**
@@ -22,7 +22,23 @@ class EmployeeStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|min:2',
+            'email' => 'required|email|unique:employees,email',
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Nama harus diisi.',
+            'name.min' => 'Nama minimal harus :min karakter.',
+            'email.required' => 'Email harus diisi.',
+            'email.unique' => 'Email sudah digunakan.',
         ];
     }
 }

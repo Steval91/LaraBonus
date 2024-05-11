@@ -21,7 +21,5 @@ class EmployeeResource extends JsonResource
             'created_at_formatted' => $this->created_at->toFormattedDateString(),
             'updated_at_formatted' => $this->updated_at->toFormattedDateString(),
         ];
-
-        // return parent::toArray($request);
     }
 }

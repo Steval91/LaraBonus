@@ -7,44 +7,40 @@ use App\Http\Requests\EmployeeUpdateRequest;
 use App\Http\Resources\EmployeeResource;
 use App\Models\Employee;
 use Illuminate\Database\Eloquent\Builder;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
     public function index()
     {
         $employeeQuery = Employee::query();
-
         $employeeQuery = $this->applySearch($employeeQuery, request('search'));
 
-        // return inertia('Employee/Index', [
-        //     'employees' => EmployeeResource::collection(
-        //         $employeeQuery->paginate(5)
-        //     ),
-        //     'search' => request('search') ?? ''
-        // ]);
-
-        $employees = Employee::all(); // Misalnya, Anda mendapatkan data pegawai dari database
-
-        return Inertia::render('Bonus/Index', [
-            'employees' => $employees // Melewatkan data pegawai langsung ke komponen Vue
+        return inertia('Employee/EmployeeIndex', [
+            'employees' => EmployeeResource::collection(
+                $employeeQuery->paginate(10)
+            ),
+            'search' => request('search') ?? '',
+            'can' => [
+                'create' => Auth::user()->is_admin == 1,
+                'update' => Auth::user()->is_admin == 1,
+                'delete' => Auth::user()->is_admin == 1
+            ]
         ]);
     }
 
     protected function applySearch(Builder $query, $search)
     {
         return $query->when($search, function ($query, $search) {
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where('name', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%');
         });
     }
 
     public function create()
     {
-        $classes = EmployeeResource::collection(Employee::all());
-
-        return inertia('Employee/Create', [
-            'classes' => $classes
-        ]);
+        return inertia('Employee/EmployeeCreate');
     }
 
     public function store(EmployeeStoreRequest $request)
@@ -54,25 +50,36 @@ class EmployeeController extends Controller
         return redirect()->route('employee.index');
     }
 
-    public function edit(Employee $employee)
+    public function show(string $id)
     {
-        $classes = EmployeeResource::collection(Employee::all());
+        $employee = Employee::find($id);
 
-        return inertia('Employee/Edit', [
+        return inertia('Employee/EmployeeShow', [
             'employee' => EmployeeResource::make($employee),
-            'classes' => $classes
         ]);
     }
 
-    public function update(EmployeeUpdateRequest $request, Employee $employee)
+    public function edit(string $id)
     {
+        $employee = Employee::find($id);
+
+        return inertia('Employee/EmployeeEdit', [
+            'employee' => EmployeeResource::make($employee),
+        ]);
+    }
+
+    public function update(EmployeeUpdateRequest $request, string $id)
+    {
+        $employee = Employee::find($id);
+
         $employee->update($request->validated());
 
         return redirect()->route('employee.index');
     }
 
-    public function destroy(Employee $employee)
+    public function destroy(string $id)
     {
+        $employee = Employee::find($id);
         $employee->delete();
 
         return redirect()->route('employee.index');
