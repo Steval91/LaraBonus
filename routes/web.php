@@ -41,8 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::resource('user', UserController::class)->except(['show']);
-    Route::resource('employee', EmployeeController::class)->except(['show']);
+    Route::resource('user', UserController::class);
+    Route::resource('employee', EmployeeController::class);
     Route::resource('bonus', BonusController::class);
 });
 
