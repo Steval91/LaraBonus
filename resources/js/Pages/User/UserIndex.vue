@@ -1,5 +1,4 @@
 <script setup>
-import DangerButton from "@/Components/DangerButton.vue";
 import MagnifyingGlass from "@/Components/Icons/MagnifyingGlass.vue";
 import Pagination from "@/Components/Pagination.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
@@ -10,7 +9,12 @@ defineProps({
     users: {
         type: Object,
     },
+    can: {
+        type: Object,
+    },
 });
+
+const tableName = "user";
 
 let pageNumber = ref(1),
     searchTerm = ref(usePage().props.search ?? "");
@@ -44,7 +48,7 @@ watch(
 
 const deleteForm = useForm({});
 
-const deleteEmployee = (id) => {
+const deleteUser = (id) => {
     if (confirm("Anda yakin akan menghapus record ini?")) {
         deleteForm.delete(route("user.destroy", id), {
             preserveScroll: true,
@@ -58,29 +62,28 @@ const deleteEmployee = (id) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Pengguna
-            </h2>
+            <div class="sm:flex sm:items-center">
+                <div class="sm:flex-auto">
+                    <h1
+                        class="text-xl font-semibold text-gray-900 leading-tight"
+                    >
+                        Daftar Pengguna
+                    </h1>
+                </div>
+
+                <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                    <Link
+                        v-if="can.create"
+                        :href="route('user.create')"
+                        class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                        >Tambah Pengguna</Link
+                    >
+                </div>
+            </div>
         </template>
         <div class="bg-gray-100 py-10">
             <div class="mx-auto max-w-7xl">
                 <div class="px-4 sm:px-6 lg:px-8">
-                    <div class="sm:flex sm:items-center">
-                        <div class="sm:flex-auto">
-                            <h1 class="text-xl font-semibold text-gray-900">
-                                Pengguna
-                            </h1>
-                        </div>
-
-                        <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                            <Link
-                                :href="route('user.create')"
-                                class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                                >Tambah Pengguna</Link
-                            >
-                        </div>
-                    </div>
-
                     <div class="flex flex-col justify-between sm:flex-row mt-6">
                         <div class="relative text-sm text-gray-800 col-span-3">
                             <div
@@ -175,7 +178,7 @@ const deleteEmployee = (id) => {
                                                 <td
                                                     class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
                                                 >
-                                                    {{ user.is_admin }}
+                                                    {{ user.is_admin_text }}
                                                 </td>
                                                 <td
                                                     class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
@@ -191,24 +194,34 @@ const deleteEmployee = (id) => {
                                                     <Link
                                                         :href="
                                                             route(
+                                                                'user.show',
+                                                                user.id
+                                                            )
+                                                        "
+                                                        class="inline-flex items-center px-2 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                                                        >Lihat Detail</Link
+                                                    >
+                                                    <Link
+                                                        v-if="can.update"
+                                                        :href="
+                                                            route(
                                                                 'user.edit',
                                                                 user.id
                                                             )
                                                         "
-                                                        class="inline-flex items-center px-4 py-2 bg-blue-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-800 active:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-950 focus:ring-offset-2 transition ease-in-out duration-150"
+                                                        class="inline-flex items-center mx-1 px-2 py-1 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
                                                     >
                                                         Edit
                                                     </Link>
-                                                    <DangerButton
+                                                    <button
+                                                        v-if="can.delete"
                                                         @click="
-                                                            deleteEmployee(
-                                                                user.id
-                                                            )
+                                                            deleteUser(user.id)
                                                         "
-                                                        class="ml-1"
+                                                        class="inline-flex items-center px-2 py-1 bg-red-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:bg-red-700 active:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
                                                     >
                                                         Hapus
-                                                    </DangerButton>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -217,6 +230,7 @@ const deleteEmployee = (id) => {
                                 <Pagination
                                     :data="users"
                                     :pageNumberUpdated="pageNumberUpdated"
+                                    :tableName="tableName"
                                 />
                             </div>
                         </div>

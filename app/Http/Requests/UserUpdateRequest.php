@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -19,9 +20,15 @@ class UserUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $employeeId = $this->route('employee');
+
         return [
-            'name' => 'required|alpha|min:2',
-            'email' => 'required|email|unique:users,email,' . $this->user->id,
+            'name' => 'required|min:2',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('employees')->ignore($employeeId),
+            ],
         ];
     }
 
@@ -34,7 +41,6 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             'name.required' => 'Nama harus diisi.',
-            'name.alpha' => 'Nama hanya boleh berisi alfabet.',
             'name.min' => 'Nama minimal harus :min karakter.',
             'email.required' => 'Email harus diisi.',
             'email.unique' => 'Email sudah digunakan.',

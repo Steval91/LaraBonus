@@ -18,8 +18,8 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            // 'is_admin' => $this->is_admin == 1 ? "Ya" : "Tidak",
             'is_admin' => $this->is_admin,
+            'is_admin_text' => $this->is_admin == 1 ? "Ya" : "Tidak",
             'created_at_formatted' => $this->created_at->toFormattedDateString(),
             'updated_at_formatted' => $this->updated_at->toFormattedDateString(),
         ];

@@ -22,6 +22,11 @@ class UserController extends Controller
                 $userQuery->paginate(10)
             ),
             'search' => request('search') ?? '',
+            'can' => [
+                'create' => Auth::user()->is_admin == 1,
+                'update' => Auth::user()->is_admin == 1,
+                'delete' => Auth::user()->is_admin == 1
+            ]
         ]);
     }
 
