@@ -5,30 +5,28 @@ namespace App\Policies;
 use App\Models\Bonus;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Auth;
 
 class BonusPolicy
 {
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return $user->is_admin == 1;
-    }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user): bool
+    public function update(): Response
     {
-        return $user->is_admin == 1;
+        return Auth::user()->is_admin == 1
+            ? Response::allow()
+            : Response::deny('Anda tidak diizinkan untuk edit Bonus.');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user): bool
+    public function delete(): Response
     {
-        return $user->is_admin == 1;
+        return Auth::user()->is_admin == 1
+            ? Response::allow()
+            : Response::deny('Anda tidak diizinkan untuk hapus Bonus.');
     }
 }

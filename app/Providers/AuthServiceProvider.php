@@ -11,6 +11,7 @@ use App\Policies\BonusPolicy;
 use App\Policies\EmployeePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -20,9 +21,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        User::class => UserPolicy::class,
-        Employee::class => EmployeePolicy::class,
-        Bonus::class => BonusPolicy::class
+        //
     ];
 
     /**

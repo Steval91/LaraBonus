@@ -3,6 +3,8 @@
 namespace App\Policies;
 
 use App\Models\Employee;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeePolicy
 {
@@ -17,24 +19,30 @@ class EmployeePolicy
     /**
      * Determine whether the employee can create models.
      */
-    public function create(Employee $employee): bool
+    public function create(): Response
     {
-        return $employee->is_admin == 1;
+        return Auth::user()->is_admin == 1
+            ? Response::allow()
+            : Response::deny('Anda tidak diizinkan untuk tambah Pegawai.');
     }
 
     /**
      * Determine whether the employee can update the model.
      */
-    public function update(Employee $employee): bool
+    public function update(): Response
     {
-        return $employee->is_admin == 1;
+        return Auth::user()->is_admin == 1
+            ? Response::allow()
+            : Response::deny('Anda tidak diizinkan untuk edit Pegawai.');
     }
 
     /**
      * Determine whether the employee can delete the model.
      */
-    public function delete(Employee $employee): bool
+    public function delete(): Response
     {
-        return $employee->is_admin == 1;
+        return Auth::user()->is_admin == 1
+            ? Response::allow()
+            : Response::deny('Anda tidak diizinkan untuk hapus Pegawai.');
     }
 }

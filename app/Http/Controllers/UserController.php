@@ -8,7 +8,10 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+
+use function PHPUnit\Framework\returnSelf;
 
 class UserController extends Controller
 {
@@ -40,6 +43,14 @@ class UserController extends Controller
 
     public function create()
     {
+        $response = Gate::inspect('create', User::class);
+
+        $message = '';
+        if ($response->denied()) {
+            $message = $response->message();
+            return inertia('Error/Unauthorized', ['message' => $message]);
+        }
+
         return inertia('User/UserCreate');
     }
 
@@ -65,6 +76,13 @@ class UserController extends Controller
 
     public function edit(string $id)
     {
+        $response = Gate::inspect('update', User::class);
+        $message = '';
+        if ($response->denied()) {
+            $message = $response->message();
+            return inertia('Error/Unauthorized', ['message' => $message]);
+        }
+
         $user = User::find($id);
 
         return inertia('User/UserEdit', [
@@ -74,6 +92,13 @@ class UserController extends Controller
 
     public function update(UserUpdateRequest $request, string $id)
     {
+        $response = Gate::inspect('update', User::class);
+        $message = '';
+        if ($response->denied()) {
+            $message = $response->message();
+            return inertia('Error/Unauthorized', ['message' => $message]);
+        }
+
         $user = User::find($id);
 
         $validatedData = $request->validated();
@@ -86,6 +111,13 @@ class UserController extends Controller
 
     public function destroy(string $id)
     {
+        $response = Gate::inspect('delete', User::class);
+        $message = '';
+        if ($response->denied()) {
+            $message = $response->message();
+            return inertia('Error/Unauthorized', ['message' => $message]);
+        }
+
         $user = User::find($id);
         $user->delete();
 

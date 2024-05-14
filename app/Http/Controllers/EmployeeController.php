@@ -8,7 +8,7 @@ use App\Http\Resources\EmployeeResource;
 use App\Models\Employee;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Gate;
 
 class EmployeeController extends Controller
 {
@@ -40,6 +40,13 @@ class EmployeeController extends Controller
 
     public function create()
     {
+        $response = Gate::inspect('create', Employee::class);
+        $message = '';
+        if ($response->denied()) {
+            $message = $response->message();
+            return inertia('Error/Unauthorized', ['message' => $message]);
+        }
+
         return inertia('Employee/EmployeeCreate');
     }
 
@@ -61,6 +68,13 @@ class EmployeeController extends Controller
 
     public function edit(string $id)
     {
+        $response = Gate::inspect('update', Employee::class);
+        $message = '';
+        if ($response->denied()) {
+            $message = $response->message();
+            return inertia('Error/Unauthorized', ['message' => $message]);
+        }
+
         $employee = Employee::find($id);
 
         return inertia('Employee/EmployeeEdit', [
@@ -70,6 +84,13 @@ class EmployeeController extends Controller
 
     public function update(EmployeeUpdateRequest $request, string $id)
     {
+        $response = Gate::inspect('update', Employee::class);
+        $message = '';
+        if ($response->denied()) {
+            $message = $response->message();
+            return inertia('Error/Unauthorized', ['message' => $message]);
+        }
+
         $employee = Employee::find($id);
 
         $employee->update($request->validated());
@@ -79,6 +100,13 @@ class EmployeeController extends Controller
 
     public function destroy(string $id)
     {
+        $response = Gate::inspect('delete', Employee::class);
+        $message = '';
+        if ($response->denied()) {
+            $message = $response->message();
+            return inertia('Error/Unauthorized', ['message' => $message]);
+        }
+
         $employee = Employee::find($id);
         $employee->delete();
 
