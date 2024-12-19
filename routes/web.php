@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\BonusController;
+use App\Http\Controllers\VoteController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -44,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('user', UserController::class);
     Route::resource('employee', EmployeeController::class);
     Route::resource('bonus', BonusController::class);
+    Route::resource('vote', VoteController::class);
 });
 
 require __DIR__ . '/auth.php';
