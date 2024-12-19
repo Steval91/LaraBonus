@@ -55,6 +55,12 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Bonus
                                 </NavLink>
+                                <NavLink
+                                    :href="route('vote.index')"
+                                    :active="route().current('vote.index')"
+                                >
+                                    Pemilihan
+                                </NavLink>
                             </div>
                         </div>
 
@@ -179,6 +185,12 @@ const showingNavigationDropdown = ref(false);
                             :active="route().current('bonus.index')"
                         >
                             Bonus
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('vote.index')"
+                            :active="route().current('vote.index')"
+                        >
+                            Pemilihan
                         </ResponsiveNavLink>
                     </div>
 
